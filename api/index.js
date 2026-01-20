@@ -101,7 +101,7 @@ app.post("/api/payments", async (req, res) => {
     email = email?.trim();
     nim = nim?.trim();
     prodi = prodi?.trim();
-    kode_unik = parseInt(kode_unik);
+    kode_unik = kode_unik?.trim();
     semester = parseInt(semester);
     jumlah_pembayaran = parseInt(jumlah_pembayaran);
 
