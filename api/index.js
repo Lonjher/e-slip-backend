@@ -4,6 +4,8 @@ const { google } = require("googleapis");
 const { v4: uuidv4 } = require("uuid");
 const emailService = require("../utils/emailService");
 
+const app = express();
+
 // Middleware
 app.use(cors());
 app.use(express.json());
