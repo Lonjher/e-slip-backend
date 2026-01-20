@@ -221,7 +221,7 @@ function generateEmailHTML(paymentData) {
                 <div class="payment-card">
                     <div style="text-align: center;">
                         <div style="font-size: 14px; opacity: 0.9;">Jumlah yang harus dibayar</div>
-                        <div class="amount">Rp ${formatRupiahDenganKodeUnik(paymentData.total, paymentData.kodeUnik)}</div>
+                        <div class="amount">Rp ${formatRupiah(paymentData.jumlah_pembayaran)}</div>
                         <div style="font-size: 14px; opacity: 0.9; margin-top: 10px;">
                             <span>Rp ${formatRupiah(paymentData.jumlah_pembayaran)} + Kode Unik: ${paymentData.kodeUnik}</span>
                         </div>
@@ -239,7 +239,7 @@ function generateEmailHTML(paymentData) {
             <div class="instructions">
                 <div class="section-title" style="color: #2d3748;">Instruksi Transfer</div>
                 <ol style="margin: 0; padding-left: 20px; color: #4a5568;">
-                    <li>Transfer tepat sejumlah <strong>${formatRupiahDenganKodeUnik(paymentData.total, paymentData.kodeUnik)}</strong></li>
+                    <li>Transfer tepat sejumlah <strong>${formatRupiahDenganKodeUnik(paymentData.jumlah_pembayaran, paymentData.kodeUnik)}</strong></li>
                     <li>
                         Ke rekening:
                         <ul>
