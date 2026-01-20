@@ -221,7 +221,7 @@ function generateEmailHTML(paymentData) {
                 <div class="payment-card">
                     <div style="text-align: center;">
                         <div style="font-size: 14px; opacity: 0.9;">Jumlah yang harus dibayar</div>
-                        <div class="amount">Rp ${formatRupiah(paymentData.jumlah_pembayaran)}</div>
+                        <div class="amount">Rp ${formatRupiahDenganKodeUnik(paymentData.total, paymentData.kodeUnik)}</div>
                         <div style="font-size: 14px; opacity: 0.9; margin-top: 10px;">
                             <span>Rp ${formatRupiah(paymentData.jumlah_pembayaran)} + Kode Unik: ${paymentData.kodeUnik}</span>
                         </div>
