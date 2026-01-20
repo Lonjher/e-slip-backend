@@ -1,15 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const { google } = require("googleapis");
-const dotenv = require("dotenv");
 const { v4: uuidv4 } = require("uuid");
-const path = require("path");
-const emailService = require("./utils/emailService");
-
-dotenv.config();
-
-const app = express();
-const PORT = process.env.PORT || 3000;
+const emailService = require("../utils/emailService");
 
 // Middleware
 app.use(cors());
@@ -28,21 +21,13 @@ function formatRupiah(angka) {
   return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-function getTimestamp() {
-  return new Date().toLocaleString("id-ID", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
+function formatTimestamp(date = new Date()) {
+  return date.toLocaleString("id-ID", {
+    dateStyle: "medium",
+    timeStyle: "short",
     timeZone: "Asia/Jakarta",
   });
 }
-
-// Serve static files from frontend
-app.use(express.static(path.join(__dirname, "../frontend")));
 
 // API Routes
 app.get("/api/health", (req, res) => {
@@ -78,7 +63,10 @@ app.post("/api/payments", async (req, res) => {
     let { nama, email, nim, prodi, semester, kode_unik, jumlah_pembayaran } =
       req.body;
     const auth = new google.auth.GoogleAuth({
-      keyFile: "credentials.json",
+      credentials: {
+        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+      },
       scopes: "https://www.googleapis.com/auth/spreadsheets",
     });
 
@@ -173,7 +161,7 @@ app.post("/api/payments", async (req, res) => {
         ...paymentData,
         jumlah_pembayaran_formatted: `Rp ${formatRupiah(jumlah_pembayaran)}`,
         total_pembayaran_formatted: `Rp ${formatRupiah(total_pembayaran)}`,
-        redirect_url: `/success.html?id=${paymentId}`,
+        redirect_url: null,
       },
     });
   } catch (err) {
@@ -184,14 +172,6 @@ app.post("/api/payments", async (req, res) => {
     });
   }
 });
-
-function formatTimestamp(date = new Date()) {
-  return date.toLocaleString("id-ID", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: "Asia/Jakarta",
-  });
-}
 
 // Get payment by ID
 app.get("/api/payments/:id", (req, res) => {
@@ -242,60 +222,4 @@ app.get("/api/payments", (req, res) => {
   }
 });
 
-// Delete payment (admin)
-app.delete("/api/payments/:id", (req, res) => {
-  try {
-    const paymentId = req.params.id;
-    const initialLength = payments.length;
-    payments = payments.filter((p) => p.id !== paymentId);
-
-    if (payments.length === initialLength) {
-      return res.status(404).json({
-        success: false,
-        message: "Data pembayaran tidak ditemukan",
-      });
-    }
-
-    res.json({
-      success: true,
-      message: "Data pembayaran berhasil dihapus",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Terjadi kesalahan server",
-    });
-  }
-});
-
-// Clear all payments (admin)
-app.delete("/api/payments", (req, res) => {
-  try {
-    const count = payments.length;
-    payments = [];
-
-    res.json({
-      success: true,
-      message: `Berhasil menghapus ${count} data pembayaran`,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Terjadi kesalahan server",
-    });
-  }
-});
-
-// Fallback route for frontend
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/index.html"));
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server berjalan di http://localhost:${PORT}`);
-  console.log(
-    `📧 Email service: ${process.env.EMAIL_USER ? "Ready" : "Not configured"}`,
-  );
-  console.log(`💾 Payments storage: In-memory (${payments.length} records)`);
-});
+module.exports = app;
