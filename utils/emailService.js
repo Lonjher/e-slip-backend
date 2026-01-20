@@ -24,6 +24,26 @@ function formatRupiah(angka) {
   return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
+function unformatRupiah(value) {
+  if (!value) return 0;
+
+  return parseInt(
+    value.toString().replace(/[^\d]/g, ""),
+    10
+  );
+}
+
+function formatRupiahDenganKodeUnik(value, kodeUnik) {
+  const angka = parseInt(String(value).replace(/\D/g, ""), 10) || 0;
+  const kode = String(kodeUnik).padStart(3, "0");
+
+  // Format rupiah normal dulu
+  const rupiah = angka.toLocaleString("id-ID");
+
+  // Ganti .000 TERAKHIR dengan .kodeUnik
+  return rupiah.replace(/\.000$/, `.${kode}`);
+}
+
 // Mock email sending for development
 async function sendMockEmail(paymentData) {
   console.log("📧 Mock email sent to:", paymentData.email);
@@ -219,7 +239,7 @@ function generateEmailHTML(paymentData) {
             <div class="instructions">
                 <div class="section-title" style="color: #2d3748;">Instruksi Transfer</div>
                 <ol style="margin: 0; padding-left: 20px; color: #4a5568;">
-                    <li>Transfer tepat sejumlah <strong>Rp ${formatRupiah(paymentData.jumlah_pembayaran)}${paymentData.kodeUnik}</strong></li>
+                    <li>Transfer tepat sejumlah <strong>${formatRupiahDenganKodeUnik(paymentData.total, paymentData.kodeUnik)}</strong></li>
                     <li>
                         Ke rekening:
                         <ul>

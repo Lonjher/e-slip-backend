@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+var randQuote = require("quote-library");
 const { google } = require("googleapis");
 const { v4: uuidv4 } = require("uuid");
 const emailService = require("../utils/emailService");
@@ -23,6 +24,21 @@ function formatRupiah(angka) {
   return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
+function unformatRupiah(str) {
+  return parseInt(str.replace(/\./g, "")) || 0;
+}
+
+function formatRupiahDenganKodeUnik(value, kodeUnik) {
+  const angka = parseInt(String(value).replace(/\D/g, ""), 10) || 0;
+  const kode = String(kodeUnik).padStart(3, "0");
+
+  // Format rupiah normal dulu
+  const rupiah = angka.toLocaleString("id-ID");
+
+  // Ganti .000 TERAKHIR dengan .kodeUnik
+  return rupiah.replace(/\.000$/, `.${kode}`);
+}
+
 function formatTimestamp(date = new Date()) {
   return date.toLocaleString("id-ID", {
     dateStyle: "medium",
@@ -37,6 +53,7 @@ app.get("/api/health", (req, res) => {
     status: "healthy",
     message: "Payment System API is running",
     timestamp: new Date().toISOString(),
+    quotes: randQuote.randomQuote(),
   });
 });
 
@@ -137,7 +154,7 @@ app.post("/api/payments", async (req, res) => {
       paymentData.semester,
       paymentData.email,
       paymentData.prodi,
-      paymentData.jumlah_pembayaran,
+      formatRupiah(paymentData.jumlah_pembayaran),
       paymentData.kodeUnik,
       paymentData.timestamp,
     ];
@@ -162,7 +179,7 @@ app.post("/api/payments", async (req, res) => {
       data: {
         ...paymentData,
         jumlah_pembayaran_formatted: `Rp ${formatRupiah(jumlah_pembayaran)}`,
-        total_pembayaran_formatted: `Rp ${formatRupiah(total_pembayaran)}`,
+        total_pembayaran_formatted: formatRupiahDenganKodeUnik(total_pembayaran, kodeUnik),
         redirect_url: null,
       },
     });
