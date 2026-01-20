@@ -131,7 +131,7 @@ app.post("/api/payments", async (req, res) => {
 
     // ===== SERVER AUTHORITY =====
     const kodeUnik = kode_unik;
-    const total_pembayaran = jumlah_pembayaran + parseInt(kode_unik);
+    const total_pembayaran = formatRupiahDenganKodeUnik(jumlah_pembayaran, parseInt(kode_unik));
     const paymentId = uuidv4();
 
     const paymentData = {
@@ -154,8 +154,8 @@ app.post("/api/payments", async (req, res) => {
       paymentData.semester,
       paymentData.email,
       paymentData.prodi,
-      formatRupiah(paymentData.jumlah_pembayaran),
-      paymentData.kodeUnik,
+      paymentData.total_pembayaran,
+      paymentData.paymentId,
       paymentData.timestamp,
     ];
 
