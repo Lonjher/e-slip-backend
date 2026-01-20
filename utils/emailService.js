@@ -219,8 +219,15 @@ function generateEmailHTML(paymentData) {
             <div class="instructions">
                 <div class="section-title" style="color: #2d3748;">Instruksi Transfer</div>
                 <ol style="margin: 0; padding-left: 20px; color: #4a5568;">
-                    <li>Transfer tepat sejumlah <strong>Rp ${formatRupiah(paymentData.jumlah_pembayaran)}</strong></li>
-                    <li>Ke rekening: <strong>BANK ABC - 1234567890</strong></li>
+                    <li>Transfer tepat sejumlah <strong>Rp ${formatRupiah(paymentData.jumlah_pembayaran)}${paymentData.kodeUnik}</strong></li>
+                    <li>
+                        Ke rekening:
+                        <ul>
+                            <li>BSI : 7304398878</li>
+                            <li>BTN : 14901500142223</li>
+                            <li>BRI : 009501004410307</li>
+                        </ul>
+                    </li>
                     <li>Atas nama: <strong>Universitas Annuqayah</strong></li>
                     <li>Gunakan ID Pembayaran sebagai referensi</li>
                     <li>Simpan bukti transfer untuk verifikasi</li>
