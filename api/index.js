@@ -154,7 +154,7 @@ app.post("/api/payments", async (req, res) => {
       paymentData.semester,
       paymentData.email,
       paymentData.prodi,
-      paymentData.jumlah_pembayaran,
+      paymentData.total_pembayaran,
       paymentId,
       paymentData.timestamp,
     ];
