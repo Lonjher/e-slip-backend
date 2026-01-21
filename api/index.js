@@ -131,6 +131,7 @@ app.post("/api/payments", async (req, res) => {
 
     // ===== SERVER AUTHORITY =====
     const kodeUnik = kode_unik;
+    console.log("Generated Kode Unik:", kodeUnik);
     const total_pembayaran = formatRupiahDenganKodeUnik(jumlah_pembayaran, parseInt(kode_unik));
     const paymentId = uuidv4();
 
