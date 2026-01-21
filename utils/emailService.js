@@ -246,6 +246,7 @@ function generateEmailHTML(paymentData) {
                             <li>BSI : 7304398878</li>
                             <li>BTN : 14901500142223</li>
                             <li>BRI : 009501004410307</li>
+                            <li>BNI : 5516000000</li>
                         </ul>
                     </li>
                     <li>Atas nama: <strong>Universitas Annuqayah</strong></li>
